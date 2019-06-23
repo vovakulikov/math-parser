@@ -1,0 +1,26 @@
+{
+  "name": "grammar-analyzer",
+  "version": "0.1.0",
+  "description": "Generic version of grammar analyzer (math expression, bool expression and etc)",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "Grammar",
+    "math",
+    "expression",
+    "parser",
+    "lexical",
+    "syntax",
+    "parser"
+  ],
+  "author": "https://github.com/vovakulikov",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.19.1",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.17.0",
+    "typescript": "^3.5.2"
+  }
+}
