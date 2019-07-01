@@ -4,7 +4,9 @@
   "description": "Generic version of grammar analyzer (math expression, bool expression and etc)",
   "main": "src/index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "serve": "nodemon",
+    "serve:ndb": "ndb node -r ts-node/register src/index.ts"
   },
   "keywords": [
     "Grammar",
