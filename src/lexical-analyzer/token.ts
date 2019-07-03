@@ -1,5 +1,5 @@
 
-export type TokenTypeKeys = 'number' | 'keyword' |'operator' | 'function' | 'identifier' | 'bracket';
+export type TokenTypeKeys = keyof typeof TokenType;
 export enum TokenType {
   number = 'number',
   keyword = 'keyword',

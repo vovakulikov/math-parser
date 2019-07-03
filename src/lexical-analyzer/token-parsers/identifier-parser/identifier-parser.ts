@@ -4,6 +4,7 @@ import { IToken, TokenType, TokenTypeKeys } from "../../token";
 type identifierTypesMap = {
   [key in TokenTypeKeys]?: Array<string>;
 }
+
 class IdentifierParser implements ITokenParser {
 
   identifierTypes: identifierTypesMap = {
@@ -24,6 +25,16 @@ class IdentifierParser implements ITokenParser {
     }
 
     const identifier = source.slice(startPosition, position);
+
+    return {
+      type: this.getTypeByIdentifier(identifier),
+      value: identifier,
+      startPosition,
+      endPosition: position
+    };
+  }
+
+  getTypeByIdentifier(identifier: string): TokenType {
     // explicit cast from string[] to TokenTypeKeys[]
     const allTypes = <TokenTypeKeys[]>Object.keys(this.identifierTypes);
     const currentType = allTypes.find((type) => {
@@ -34,12 +45,9 @@ class IdentifierParser implements ITokenParser {
         : false
     });
 
-    return {
-      type: currentType != undefined ? TokenType[currentType] : TokenType.identifier,
-      value: identifier,
-      startPosition,
-      endPosition: position
-    };
+    return currentType != undefined
+      ? TokenType[currentType]
+      : TokenType.identifier;
   }
 }
 
