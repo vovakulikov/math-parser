@@ -1,9 +1,12 @@
-export const enum TokenType {
-  number,
-  keyword,
-  operator,
-  function,
-  bracket,
+
+export type TokenTypeKeys = 'number' | 'keyword' |'operator' | 'function' | 'identifier' | 'bracket';
+export enum TokenType {
+  number = 'number',
+  keyword = 'keyword',
+  operator = 'operator',
+  function = 'function',
+  bracket = 'bracket',
+  identifier = 'identifier',
 }
 
 export interface IToken<T = string> {
