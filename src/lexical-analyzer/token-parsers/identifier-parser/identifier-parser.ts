@@ -20,7 +20,7 @@ class IdentifierParser implements ITokenParser {
   invoke(startPosition: number, source: string): IToken<string> {
     let position = startPosition;
 
-    while (/\w/.test(source[position])) {
+    while (/\w/.test(source[position]) && source[position] != undefined) {
       position++;
     }
 

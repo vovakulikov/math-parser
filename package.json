@@ -4,7 +4,7 @@
   "description": "Generic version of grammar analyzer (math expression, bool expression and etc)",
   "main": "src/index.js",
   "scripts": {
-    "test": "test",
+    "test": "jest",
     "serve": "nodemon",
     "serve:ndb": "ndb node -r ts-node/register src/index.ts"
   },
@@ -20,7 +20,10 @@
   "author": "https://github.com/vovakulikov",
   "license": "ISC",
   "devDependencies": {
+    "@types/jest": "^24.0.15",
+    "jest": "^24.8.0",
     "nodemon": "^1.19.1",
+    "ts-jest": "^24.0.2",
     "ts-node": "^8.3.0",
     "tslint": "^5.17.0",
     "typescript": "^3.5.2"
