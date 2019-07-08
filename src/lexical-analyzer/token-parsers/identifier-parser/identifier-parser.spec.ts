@@ -2,20 +2,21 @@ import IdentifierParser from './identifier-parser';
 import { ITokenParser } from "../parser";
 import { TokenType } from "../../token";
 
-describe('Pareser guard ',() => {
-
+describe('Identifier parser ',() => {
   let parser: ITokenParser;
 
   beforeAll(() => {
     parser = new IdentifierParser();
   });
 
-  test('should correct check alphabetic character', () => {
-    expect(parser.guard('a')).toBeTruthy();
-  });
+  describe('guard', () => {
+    test('should correct check alphabetic character', () => {
+      expect(parser.guard('a')).toBeTruthy();
+    });
 
-  test('should correct work with forbidden character "-"', () => {
-    expect(parser.guard('-')).toBeFalsy();
+    test('should correct work with forbidden character "-"', () => {
+      expect(parser.guard('-')).toBeFalsy();
+    });
   });
 
   test('should correct parse simple identifier', () => {

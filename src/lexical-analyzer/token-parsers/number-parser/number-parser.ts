@@ -54,11 +54,11 @@ export const transitions: TransitionMap<States> = {
 };
 
 // Number parser
-class NumberParser implements ITokenParser {
+class NumberParser implements ITokenParser<number> {
 
   guard = (character: string) => isDigit(character);
 
-  invoke(startPosition: number, source: string): IToken | null {
+  invoke(startPosition: number, source: string): IToken<number> | null {
     const fsmParser = new FiniteStateMachine(
       States.Initial,
       new Set([ States.Integer, States.NumberWithExponent, States.NumberWithFractionalPart ]),
@@ -70,7 +70,7 @@ class NumberParser implements ITokenParser {
 
     if (parsedResult.successfullyDisassembled) {
       return {
-        value: source.slice(startPosition, parsedResult.cursor),
+        value: +source.slice(startPosition, parsedResult.cursor + 1),
         type: TokenType.number,
         startPosition,
         endPosition: parsedResult.cursor

@@ -1,6 +1,7 @@
-export type FSMResult = {
+export type FSMResult<T> = {
   successfullyDisassembled: boolean;
   cursor: number;
+  lastState: T | null
 };
 
 export type Transition<S, A> = {
@@ -18,7 +19,7 @@ class FiniteStateMachine<S extends number, A extends string> {
     private transition: TransitionMap<S>,
     private errorState: S) {}
 
-  run(source: A): FSMResult {
+  run(source: A): FSMResult<S> {
     let currentState = this.initialState;
     let nextState = null;
     let i = 0;
@@ -42,6 +43,7 @@ class FiniteStateMachine<S extends number, A extends string> {
       // if we got a error state we need get prev index
       // for correct get a end border of token
       cursor: nextState !== null ? i - 1 : i,
+      lastState: nextState
     }
   }
 
