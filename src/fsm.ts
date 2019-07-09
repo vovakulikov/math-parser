@@ -8,6 +8,7 @@ export type Transition<S, A> = {
   to: S;
   byCondition?: (input: A) => boolean;
 }
+
 export type TransitionMap<S extends number> = {
   [key in S]: Array<Transition<S, string>>
 };

@@ -10,6 +10,8 @@ export enum TokenType {
   greaterThan = 'greatherThan',
   greatherThanOrEqual = 'greatherThanOrEqual',
   lessThan = 'lessThan',
+  rightParenthesis = 'rightParenthesis',
+  leftParenthesis = 'leftParenthesis',
   lessThanOrEqual = 'lessThanOrEqual',
   assign = 'assign',
   equal = 'equal',
