@@ -1,7 +1,7 @@
 import { ITokenParser } from "../parser";
 import { IToken, TokenType } from "../../token";
 
-class ArithmeticOperatorParser implements ITokenParser {
+class ArithmeticOperatorParser implements ITokenParser<string> {
 
   private operators = ['+', '*', '/', '-', '^'];
 

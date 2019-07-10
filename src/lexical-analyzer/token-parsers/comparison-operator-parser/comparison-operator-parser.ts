@@ -1,7 +1,7 @@
 import { ITokenParser } from "../parser";
 import { IToken, TokenType } from "../../token";
 
-class ComparisonOperatorParser implements ITokenParser {
+class ComparisonOperatorParser implements ITokenParser<string> {
 
   operators: { [key: string]: TokenType} = {
     '>': TokenType.greaterThan,

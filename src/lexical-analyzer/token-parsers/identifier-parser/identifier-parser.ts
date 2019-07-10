@@ -5,7 +5,7 @@ type identifierTypesMap = {
   [key in TokenTypeKeys]?: Array<string>;
 }
 
-class IdentifierParser implements ITokenParser {
+class IdentifierParser implements ITokenParser<string> {
 
   identifierTypes: identifierTypesMap = {
     [TokenType.keyword]: ['var', 'const', 'let'],
