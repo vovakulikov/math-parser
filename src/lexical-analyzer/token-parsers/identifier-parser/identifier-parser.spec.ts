@@ -3,7 +3,7 @@ import { ITokenParser } from "../parser";
 import { TokenType } from "../../token";
 
 describe('Identifier parser ',() => {
-  let parser: ITokenParser;
+  let parser: ITokenParser<string>;
 
   beforeAll(() => {
     parser = new IdentifierParser();

@@ -1,7 +1,8 @@
 import { IToken, TokenType } from "../../token";
-import FiniteStateMachine, { TransitionMap } from "../../../fsm";
 import { isCharacter, isDigit } from "../checkers";
 import { ITokenParser } from "../parser";
+import FiniteStateMachine, { FSMResult, TransitionMap } from "../../../fsm";
+import LexicalError from "../../errors/lexical-error";
 
 enum States {
   Initial,
@@ -53,6 +54,14 @@ export const transitions: TransitionMap<States> = {
   [States.NoNextState]: []
 };
 
+export class NumberParserError extends LexicalError {
+  constructor(startPosition: number, source: string, parsedResult: FSMResult<States>) {
+    super(`Invalid number format ${source.slice(startPosition, parsedResult.cursor + 1)}`);
+    // This problem with error and transpile to es5 by tsc
+    Object.setPrototypeOf(this, NumberParserError.prototype);
+  }
+}
+
 // Number parser
 class NumberParser implements ITokenParser<number> {
 
@@ -70,13 +79,13 @@ class NumberParser implements ITokenParser<number> {
 
     if (parsedResult.successfullyDisassembled) {
       return {
-        value: +source.slice(startPosition, parsedResult.cursor + 1),
+        value: +source.slice(startPosition, startPosition + parsedResult.cursor),
         type: TokenType.number,
         startPosition,
-        endPosition: parsedResult.cursor
+        endPosition: startPosition + parsedResult.cursor
       }
     } else {
-      return null;
+      throw new NumberParserError(startPosition, source, parsedResult);
     }
   }
 }

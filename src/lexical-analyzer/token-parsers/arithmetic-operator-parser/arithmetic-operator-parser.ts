@@ -8,11 +8,13 @@ class ArithmeticOperatorParser implements ITokenParser<string> {
   guard(character: string) { return this.operators.indexOf(character) !== -1; }
 
   invoke(startPosition: number, source: string): IToken {
+    const token = source.slice(startPosition, startPosition + 1);
+
     return {
       type: TokenType.operator,
-      value: source.slice(startPosition, startPosition + 1),
+      value: token,
       startPosition,
-      endPosition: startPosition + 1
+      endPosition: startPosition + token.length
     };
   }
 }

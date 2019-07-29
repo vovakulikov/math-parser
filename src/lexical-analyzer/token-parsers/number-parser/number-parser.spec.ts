@@ -1,4 +1,4 @@
-import NumberParser from "./number-parser";
+import NumberParser, { NumberParserError } from './number-parser';
 
 describe('Number parser', () => {
   let parser: NumberParser;
@@ -69,9 +69,10 @@ describe('Number parser', () => {
   describe('should fail parse', () => {
 
     test('on uncorrect exponent number', () => {
-      const token = parser.invoke(0, '1.12e');
-
-      expect(token).toBeNull();
+      expect(() => parser.invoke(0, '1.12e'))
+         .toThrowError(NumberParserError);
+      expect(() => parser.invoke(0, '1.12e'))
+        .toThrowError(NumberParserError);
     });
   });
 

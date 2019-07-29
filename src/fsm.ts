@@ -43,7 +43,7 @@ class FiniteStateMachine<S extends number, A extends string> {
       successfullyDisassembled: this.acceptingStates.has(currentState),
       // if we got a error state we need get prev index
       // for correct get a end border of token
-      cursor: nextState !== null ? i - 1 : i,
+      cursor: i,
       lastState: nextState
     }
   }

@@ -5,7 +5,7 @@ class ComparisonOperatorParser implements ITokenParser<string> {
 
   operators: { [key: string]: TokenType} = {
     '>': TokenType.greaterThan,
-    '>=': TokenType.greatherThanOrEqual,
+    '>=': TokenType.greaterThanOrEqual,
     '<': TokenType.lessThan,
     '<=': TokenType.lessThanOrEqual,
     '=': TokenType.assign,
