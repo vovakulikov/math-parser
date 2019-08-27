@@ -97,8 +97,8 @@ class SyntaxAnalyzer {
       const currentProcessedElement = this.rules[i].left;
 
       resultSets[currentProcessedElement.value] = {
-        leftElements: this.getLeftSet(currentProcessedElement),
-        rightElements: this.getRightSet(currentProcessedElement),
+        leftElements: [...this.getLeftSet(currentProcessedElement).values()],
+        rightElements: [...this.getRightSet(currentProcessedElement).values()],
       }
     }
 
@@ -107,9 +107,9 @@ class SyntaxAnalyzer {
   // Get all left corner terminal symbols at grammar
   // Memo just need for escape search sets element at grammar what we already searched
   // This is Lt(U) set if speak by academic language
-  private getLeftSet = memo<Array<Vocabulary>, ReturnType<typeof VN>>((element: ReturnType<typeof VN>) => {
+  private getLeftSet = memo<Map<String, Vocabulary>, ReturnType<typeof VN>>((element: ReturnType<typeof VN>) => {
     const rule = this.rules.find((rule) => rule.left.value == element.value);
-    const leftElements = [];
+    let leftElements = new Map<String, Vocabulary>();
 
     if (rule == null) {
       // TODO Added custom error of none find element of rule
@@ -130,23 +130,23 @@ class SyntaxAnalyzer {
         const nextTerminal = currentRule
           .find((symbol) => this.vt.has(symbol.value));
 
-        if (nextTerminal != null) {
-          leftElements.push(nextTerminal);
+        if (nextTerminal != null && !leftElements.has(nextTerminal.value)) {
+          leftElements.set(nextTerminal.value, nextTerminal);
         }
 
         // Add inner elements into result array
-        leftElements.push.apply(leftElements, innerElements);
+        leftElements = new Map<String, Vocabulary>([...leftElements, ...innerElements]);
       } else {
-        leftElements.push(leftElement);
+        leftElements.set(leftElement.value, leftElement);
       }
     }
 
     return leftElements;
   }, { keySelector: (element: Array<ReturnType<typeof VN>>) => element[0].value});
 
-  private getRightSet = memo<Array<Vocabulary>, ReturnType<typeof VN>>((element: ReturnType<typeof VN>) => {
+  private getRightSet = memo<Map<String, Vocabulary>, ReturnType<typeof VN>>((element: ReturnType<typeof VN>) => {
     const rule = this.rules.find((rule) => rule.left.value === element.value);
-    const leftElements = [];
+    let rightElements = new Map<String, Vocabulary>();
 
     if (rule == null) {
       // TODO Added custom error of none find element of rule
@@ -159,24 +159,28 @@ class SyntaxAnalyzer {
       const rightElement = currentRule[currentRule.length - 1];
 
       if (this.vn.has(rightElement.value)) {
-        const innerElements = this.getRightSet(rightElement);
+        // Just
+        const innerElements = rightElement.value !== rule.left.value
+          ? this.getRightSet(rightElement)
+          : new Map();
         const nextTerminal = currentRule
           .reverse()
           .find((symbol) => this.vt.has(symbol.value));
 
-        if (nextTerminal != null) {
-          leftElements.push(nextTerminal);
+        if (nextTerminal != null && !rightElements.has(nextTerminal.value)) {
+          rightElements.set(nextTerminal.value, nextTerminal);
         }
 
         // Add inner elements into result array
-        leftElements.push.apply(leftElements, innerElements);
+        rightElements = new Map([...rightElements, ...innerElements])
       } else {
-        leftElements.push(rightElement);
+        rightElements.set(rightElement.value, rightElement);
       }
     }
 
-    return leftElements;
+    return rightElements;
   }, { keySelector: (element: Array<ReturnType<typeof VN>>) => element[0].value});
+
 }
 
 export default SyntaxAnalyzer;
