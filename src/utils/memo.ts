@@ -1,5 +1,6 @@
 
-type Func<A, R = unknown> = (...args: Array<any>) => R;
+type Func<A, R = unknown> = (...args: Array<A>) => R;
+
 type Options<A> = {
   keySelector: (args: Array<A>) => unknown;
 }
@@ -9,11 +10,11 @@ const initialOptions: Options<unknown> = {
   keySelector: (args: Array<unknown>) => args[0]
 };
 
-export default <T, A>(fn: Func<A, T>, options?: Options<A>) => {
+export default <ReturnType, Arguments>(fn: Func<Arguments, ReturnType>, options?: Options<Arguments>) => {
   const normalizedOptions = { ...initialOptions, ...options };
   const cache = new Map();
 
-  return (...args: Array<A>): T => {
+  return (...args: Array<Arguments>): ReturnType => {
     const key = normalizedOptions.keySelector(args);
 
     if (cache.has(key)) {

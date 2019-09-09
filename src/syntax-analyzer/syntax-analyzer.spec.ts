@@ -1,4 +1,5 @@
-import SyntaxAnalyzer, { VN, VT } from "./syntax-analyzer";
+import SyntaxAnalyzer  from "./syntax-analyzer";
+import { NonTerminal, Terminal } from "./types";
 
 
 describe('syntax analyzer', () => {
@@ -14,8 +15,8 @@ describe('syntax analyzer', () => {
 `;
 
     syntaxAnalyzer = new SyntaxAnalyzer({
-      vt: new Set(['-', '&', '^', '(', ')', 'p']),
-      vn: new Set(['S','B','T','J',]),
+      terminals: new Set(['-', '&', '^', '(', ')', 'p']),
+      nonTerminals: new Set(['S','B','T','J',]),
       // TODO Move this to another method or function
       rawRules: grammarString
     });
@@ -27,29 +28,29 @@ describe('syntax analyzer', () => {
 
     expect(syntaxAnalyzer.rules).toEqual([
       {
-        left: VN('S'),
+        left: NonTerminal('S'),
         right: [
-          [ VT('-'), VN('B') ]
+          [ Terminal('-'), NonTerminal('B') ]
         ]
       },
       {
-        left: VN('B'),
+        left: NonTerminal('B'),
         right: [
-          [ VN('T') ],
-          [ VN('B'),  VT('&'), VN('T') ]]
+          [ NonTerminal('T') ],
+          [ NonTerminal('B'),  Terminal('&'), NonTerminal('T') ]]
       },
       {
-        left: VN('T'),
+        left: NonTerminal('T'),
         right: [
-          [ VN('J') ],
-          [ VN('T'), VT('^'), VN('J') ]
+          [ NonTerminal('J') ],
+          [ NonTerminal('T'), Terminal('^'), NonTerminal('J') ]
         ]
       },
       {
-        left: VN('J'),
+        left: NonTerminal('J'),
         right: [
-          [ VT('('), VN('B'), VT(')') ],
-          [ VT('p') ]
+          [ Terminal('('), NonTerminal('B'), Terminal(')') ],
+          [ Terminal('p') ]
         ]
       }
     ]);
