@@ -1,13 +1,6 @@
 import memo from '../utils/memo';
-import { Grammar, NonTerminalType, Vocabulary, Rule } from "./types";
-import parseGrammar from './parse-string-to-grammar-rule';
+import { Grammar, NonTerminalType, Rule, TypeSymbol, Vocabulary } from "./types";
 import SyntaxParseError from "./errors/syntax-parse-error";
-
-type AnalyzerOptions = {
-  terminals: Set<string>,
-  nonTerminals: Set<string>,
-  rawRules: string,
-}
 
 type CornersTerminals = {
   [key: string]: {
@@ -18,20 +11,11 @@ type CornersTerminals = {
 
 class SyntaxAnalyzer {
 
-  terminals: Set<string> = new Set();
-  nonTerminals: Set<string> = new Set();
-  rules: Grammar = [];
+  constructor(public rules: Grammar) {}
 
-  constructor(options: AnalyzerOptions) {
-    this.terminals = options.terminals;
-    this.nonTerminals = options.nonTerminals;
-
-    this.rules = parseGrammar(options.rawRules, this.terminals, this.nonTerminals);
-  }
+  static getUniqElementKey = (args: Array<NonTerminalType>) => args[0].value;
 
   getCornerTerminalSets(): CornersTerminals {
-    const resultSets: CornersTerminals = {};
-
     return this.rules.reduce<CornersTerminals>((result, rule) => {
       const currentProcessedElement = rule.left;
 
@@ -46,7 +30,7 @@ class SyntaxAnalyzer {
 
   // Get all left corner terminal symbols at grammar
   // Memo just need for escape search sets element at grammar what we already searched
-  // This is Lt(U) set if speak by academic language
+  // This is LT(U) set
   private getLeftSet = memo<Map<String, Vocabulary>, NonTerminalType>((element: NonTerminalType) => {
     const rule = this.getRuleByElement(element);
     let leftElements = new Map<String, Vocabulary>();
@@ -55,7 +39,7 @@ class SyntaxAnalyzer {
       const currentRule = rule.right[i];
       const leftElement = currentRule[0];
 
-      if (this.nonTerminals.has(leftElement.value)) {
+      if (leftElement.type === TypeSymbol.NonTerminal) {
         // Get left element of rule
 
         const innerElements = leftElement.value !== rule.left.value
@@ -63,7 +47,7 @@ class SyntaxAnalyzer {
           : [];
 
         const nextTerminal = currentRule
-          .find((symbol) => this.terminals.has(symbol.value));
+          .find((symbol) => symbol.type === TypeSymbol.Terminal);
 
         if (nextTerminal != null && !leftElements.has(nextTerminal.value)) {
           leftElements.set(nextTerminal.value, nextTerminal);
@@ -88,13 +72,13 @@ class SyntaxAnalyzer {
       // Get right element of rule
       const rightElement = currentRule[currentRule.length - 1];
 
-      if (this.nonTerminals.has(rightElement.value)) {
+      if (rightElement.type === TypeSymbol.NonTerminal) {
         const innerElements = rightElement.value !== rule.left.value
           ? this.getRightSet(rightElement)
           : new Map();
         const nextTerminal = currentRule
           .reverse()
-          .find((symbol) => this.terminals.has(symbol.value));
+          .find((symbol) => symbol.type === TypeSymbol.Terminal);
 
         if (nextTerminal != null && !rightElements.has(nextTerminal.value)) {
           rightElements.set(nextTerminal.value, nextTerminal);
@@ -119,8 +103,6 @@ class SyntaxAnalyzer {
 
     return rule;
   }
-
-  static getUniqElementKey = (element: Array<NonTerminalType>) => element[0].value;
 
 }
 

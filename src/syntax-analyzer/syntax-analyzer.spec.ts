@@ -1,26 +1,22 @@
 import SyntaxAnalyzer  from "./syntax-analyzer";
 import { NonTerminal, Terminal } from "./types";
-
+import parseStringToGrammar from './parse-string-to-grammar-rule';
 
 describe('syntax analyzer', () => {
 
   let syntaxAnalyzer: SyntaxAnalyzer;
 
   beforeAll(() => {
-    const  grammarString = `
+    const terminals = new Set(['-', '&', '^', '(', ')', 'p']);
+    const nonTerminals = new Set(['S','B','T','J',]);
+    const grammarString = `
       S => - B
       B => T | B & T
       T => J | T ^ J
       J => ( B ) | p
 `;
 
-    syntaxAnalyzer = new SyntaxAnalyzer({
-      terminals: new Set(['-', '&', '^', '(', ')', 'p']),
-      nonTerminals: new Set(['S','B','T','J',]),
-      // TODO Move this to another method or function
-      rawRules: grammarString
-    });
-
+    syntaxAnalyzer = new SyntaxAnalyzer(parseStringToGrammar({ terminals, nonTerminals, grammarString}));
   });
 
   test('should correct parse grammar string to vocabulary', () => {

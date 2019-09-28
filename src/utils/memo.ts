@@ -10,6 +10,7 @@ const initialOptions: Options<unknown> = {
   keySelector: (args: Array<unknown>) => args[0]
 };
 
+// TODO [VK] Improve types for arguments of func
 export default <ReturnType, Arguments>(fn: Func<Arguments, ReturnType>, options?: Options<Arguments>) => {
   const normalizedOptions = { ...initialOptions, ...options };
   const cache = new Map();

@@ -7,6 +7,7 @@ import ComparisonOperatorParser from "./token-parsers/comparison-operator-parser
 import ParenthesisParser from "./token-parsers/parenthesis-parser/parenthesis-parser";
 import LexicalError from "./errors/lexical-error";
 
+// TODO [VK] Try rewrite this part by combination of parsers
 class LexerAnalyzer {
   parsers: Array<ITokenParser<string | number>> = [
     new NumberParser(),
