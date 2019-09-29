@@ -1,5 +1,5 @@
 
-class LexicalError extends Error {
+class SyntaxParseError extends Error {
   name: string;
   message: string;
   stack: string | undefined;
@@ -8,7 +8,7 @@ class LexicalError extends Error {
     super(message);
 
     // This problem with error and transpile to es5 by tsc
-    Object.setPrototypeOf(this, LexicalError.prototype);
+    Object.setPrototypeOf(this, SyntaxParseError.prototype);
 
     this.name = this.constructor.name;
     this.message = message;
@@ -16,4 +16,4 @@ class LexicalError extends Error {
   }
 }
 
-export default LexicalError;
+export default SyntaxParseError;
