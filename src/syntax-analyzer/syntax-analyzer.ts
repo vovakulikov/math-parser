@@ -1,5 +1,5 @@
 import memo from '../utils/memo';
-import { CornersTerminals, Grammar, NonTerminalType, Rule, TerminalType, TypeSymbol } from "./types";
+import { CornerTerminals, Grammar, NonTerminalType, Rule, TerminalType, TypeSymbol } from "./types";
 import SyntaxParseError from "./errors/syntax-parse-error";
 
 class SyntaxAnalyzer {
@@ -9,8 +9,8 @@ class SyntaxAnalyzer {
   static getUniqElementKey = (args: Array<NonTerminalType>) => args[0].value;
 
   // TODO [VK] Added new data structure for store Vocabulary elements
-  getCornerTerminalSets(): CornersTerminals {
-    return this.rules.reduce<CornersTerminals>((result, rule) => {
+  getCornerTerminalSets(): CornerTerminals {
+    return this.rules.reduce<CornerTerminals>((result, rule) => {
       const currentProcessedElement = rule.left;
 
       result.set(currentProcessedElement.value, {

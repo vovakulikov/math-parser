@@ -1,4 +1,4 @@
-import { CornersTerminals, Grammar, TerminalType, TypeSymbol, Vocabulary } from "./types";
+import { CornerTerminals, Grammar, TerminalType, TypeSymbol, Vocabulary } from "./types";
 
 enum Relation {
   Base,
@@ -24,7 +24,7 @@ function getInitMatrix(elements: Array<TerminalType>) {
 
 const isCorrectType = (symbol: Vocabulary, type: TypeSymbol) => symbol != undefined && symbol.type === type;
 
-function processNextSymbol(symbol: Vocabulary, cornerTerminals: CornersTerminals, row: Map<string, Relation>) {
+function processNextSymbol(symbol: Vocabulary, cornerTerminals: CornerTerminals, row: Map<string, Relation>) {
   const cornersTerminalOfSymbol = cornerTerminals.get(symbol.value);
   const rightSymbols = cornersTerminalOfSymbol != undefined ? cornersTerminalOfSymbol.rightElements : [];
 
@@ -37,7 +37,7 @@ function processNextSymbol(symbol: Vocabulary, cornerTerminals: CornersTerminals
   return row;
 }
 
-function createPrecedenceMatrix(elements: Array<TerminalType>, rules: Grammar, cornerTerminals: CornersTerminals) {
+function createPrecedenceMatrix(elements: Array<TerminalType>, rules: Grammar, cornerTerminals: CornerTerminals) {
   const matrix = getInitMatrix(elements);
 
   // go through all syntax shift rules
@@ -93,7 +93,6 @@ function createPrecedenceMatrix(elements: Array<TerminalType>, rules: Grammar, c
         }
 
         if (isCorrectType(nextSymbol, TypeSymbol.NonTerminal) && isCorrectType(secondSymbolAHead, TypeSymbol.Terminal)) {
-
           symbolRow.set(nextSymbol.value, Relation.Base);
         }
       }
