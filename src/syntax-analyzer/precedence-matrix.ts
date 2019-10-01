@@ -37,8 +37,8 @@ function processNextSymbol(symbol: Vocabulary, cornerTerminals: CornerTerminals,
   return row;
 }
 
-function createPrecedenceMatrix(elements: Array<TerminalType>, rules: Grammar, cornerTerminals: CornerTerminals) {
-  const matrix = getInitMatrix(elements);
+function createPrecedenceMatrix(terminals: Array<TerminalType>, rules: Grammar, cornerTerminals: CornerTerminals) {
+  const matrix = getInitMatrix(terminals);
 
   // go through all syntax shift rules
   for (let i = 0; i < rules.length; i++) {
@@ -46,7 +46,7 @@ function createPrecedenceMatrix(elements: Array<TerminalType>, rules: Grammar, c
 
     // go through all syntax rules for current non terminal
     for (let j = 0; j < currentShiftRules.length; j++) {
-      const currentRule = currentShiftRules[i];
+      const currentRule = currentShiftRules[j];
 
       // go through all symbols in rule
       for (let k = 0; k < currentRule.length; k++) {
@@ -79,7 +79,7 @@ function createPrecedenceMatrix(elements: Array<TerminalType>, rules: Grammar, c
         }
 
         if (prevSymbol != undefined) {
-          const cornersTerminalOfSymbol = cornerTerminals.get(nextSymbol.value);
+          const cornersTerminalOfSymbol = cornerTerminals.get(prevSymbol.value);
           const leftSymbols = cornersTerminalOfSymbol != undefined ? cornersTerminalOfSymbol.leftElements : [];
 
           for (let s = 0; s < leftSymbols.length; s++) {
@@ -98,6 +98,8 @@ function createPrecedenceMatrix(elements: Array<TerminalType>, rules: Grammar, c
       }
     }
   }
+
+  return matrix;
 }
 
 export default createPrecedenceMatrix;

@@ -1,6 +1,7 @@
 import SyntaxAnalyzer  from "./syntax-analyzer";
 import { NonTerminal, Terminal, TerminalType } from "./types";
 import parseStringToGrammar from './parse-string-to-grammar-rule';
+import createPrecedenceMatrix from "./precedence-matrix";
 
 describe('syntax analyzer', () => {
 
@@ -117,5 +118,22 @@ describe('syntax analyzer', () => {
 
     expect(cornerTerminals).includeSameCornerTerminals(expectedTerminals);
   });
+
+
+  test('precedence matrix', () => {
+    const terminals = [
+      Terminal('-'),
+      Terminal('&'),
+      Terminal('^'),
+      Terminal(')'),
+      Terminal('('),
+      Terminal('p'),
+    ];
+    const cornerTerminals = syntaxAnalyzer.getCornerTerminalSets();
+
+    const matrix = createPrecedenceMatrix(terminals, syntaxAnalyzer.rules, cornerTerminals);
+
+    expect(matrix).toBeTruthy();
+  })
 
 });
