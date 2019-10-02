@@ -67,6 +67,7 @@ class SyntaxAnalyzer {
           ? this.getRightSet(rightElement)
           : new Map();
         const nextTerminal = currentRule
+          .concat()
           .reverse()
           .find((symbol) => symbol.type === TypeSymbol.Terminal);
 

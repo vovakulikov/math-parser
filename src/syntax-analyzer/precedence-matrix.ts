@@ -1,6 +1,6 @@
 import { CornerTerminals, Grammar, TerminalType, TypeSymbol, Vocabulary } from "./types";
 
-enum Relation {
+export enum Relation {
   Base,
   Prev,
   Next,
@@ -64,12 +64,12 @@ function createPrecedenceMatrix(terminals: Array<TerminalType>, rules: Grammar, 
 
         if (nextSymbol != undefined) {
 
-          if (nextSymbol.type === TypeSymbol.Terminal) {
+          if (nextSymbol.type == TypeSymbol.Terminal) {
             symbolRow.set(nextSymbol.value, Relation.Base);
           }
 
           const cornersTerminalOfSymbol = cornerTerminals.get(nextSymbol.value);
-          const rightSymbols = cornersTerminalOfSymbol != undefined ? cornersTerminalOfSymbol.rightElements : [];
+          const rightSymbols = cornersTerminalOfSymbol != undefined ? cornersTerminalOfSymbol.leftElements : [];
 
           for (let s = 0; s < rightSymbols.length; s++) {
             const currentRightSymbol = rightSymbols[s];
@@ -80,11 +80,11 @@ function createPrecedenceMatrix(terminals: Array<TerminalType>, rules: Grammar, 
 
         if (prevSymbol != undefined) {
           const cornersTerminalOfSymbol = cornerTerminals.get(prevSymbol.value);
-          const leftSymbols = cornersTerminalOfSymbol != undefined ? cornersTerminalOfSymbol.leftElements : [];
+          const leftSymbols = cornersTerminalOfSymbol != undefined ? cornersTerminalOfSymbol.rightElements : [];
 
           for (let s = 0; s < leftSymbols.length; s++) {
-            const currentSymbol = leftSymbols[s];
-            const currentSymbolRow = matrix.get(currentSymbol.value);
+            const currentCornerSymbol = leftSymbols[s];
+            const currentSymbolRow = matrix.get(currentCornerSymbol.value);
 
             if (currentSymbolRow != undefined) {
               currentSymbolRow.set(currentSymbol.value, Relation.Next);
@@ -93,7 +93,7 @@ function createPrecedenceMatrix(terminals: Array<TerminalType>, rules: Grammar, 
         }
 
         if (isCorrectType(nextSymbol, TypeSymbol.NonTerminal) && isCorrectType(secondSymbolAHead, TypeSymbol.Terminal)) {
-          symbolRow.set(nextSymbol.value, Relation.Base);
+          symbolRow.set(secondSymbolAHead.value, Relation.Base);
         }
       }
     }

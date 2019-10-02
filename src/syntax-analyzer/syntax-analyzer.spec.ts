@@ -1,7 +1,7 @@
 import SyntaxAnalyzer  from "./syntax-analyzer";
-import { NonTerminal, Terminal, TerminalType } from "./types";
+import { NonTerminal, Terminal } from "./types";
 import parseStringToGrammar from './parse-string-to-grammar-rule';
-import createPrecedenceMatrix from "./precedence-matrix";
+import createPrecedenceMatrix, { Relation } from "./precedence-matrix";
 
 describe('syntax analyzer', () => {
 
@@ -120,7 +120,7 @@ describe('syntax analyzer', () => {
   });
 
 
-  test('precedence matrix', () => {
+  test('should correct build precedence matrix for current grammar', () => {
     const terminals = [
       Terminal('-'),
       Terminal('&'),
@@ -129,11 +129,62 @@ describe('syntax analyzer', () => {
       Terminal('('),
       Terminal('p'),
     ];
+    const rules = syntaxAnalyzer.rules;
     const cornerTerminals = syntaxAnalyzer.getCornerTerminalSets();
 
+    const expectedMatrix = buildMapFromObject({
+      '-': buildMapFromObject({
+        '-': Relation.None,
+        '&': Relation.Prev,
+        '^': Relation.Prev,
+        '(': Relation.Prev,
+        ')': Relation.None,
+        'p': Relation.Prev,
+      }),
+      '&': buildMapFromObject({
+        '-': Relation.None,
+        '&': Relation.Next,
+        '^': Relation.Prev,
+        '(': Relation.Prev,
+        ')': Relation.Next,
+        'p': Relation.Prev,
+      }),
+      '^': buildMapFromObject({
+        '-': Relation.None,
+        '&': Relation.Next,
+        '^': Relation.Next,
+        '(': Relation.Prev,
+        ')': Relation.Next,
+        'p': Relation.Prev,
+      }),
+      '(': buildMapFromObject({
+        '-': Relation.None,
+        '&': Relation.Prev,
+        '^': Relation.Prev,
+        '(': Relation.Prev,
+        ')': Relation.Base,
+        'p': Relation.Prev,
+      }),
+      ')': buildMapFromObject({
+        '-': Relation.None,
+        '&': Relation.Next,
+        '^': Relation.Next,
+        '(': Relation.None,
+        ')': Relation.Next,
+        'p': Relation.None,
+      }),
+      'p': buildMapFromObject({
+        '-': Relation.None,
+        '&': Relation.Next,
+        '^': Relation.Next,
+        '(': Relation.None,
+        ')': Relation.Next,
+        'p': Relation.None,
+      }),
+    });
     const matrix = createPrecedenceMatrix(terminals, syntaxAnalyzer.rules, cornerTerminals);
 
-    expect(matrix).toBeTruthy();
+    expect(matrix).toEqual(expectedMatrix);
   })
 
 });
