@@ -7,6 +7,8 @@ export enum Relation {
   None
 }
 
+export type PrecedenceMatrix = Map<string, Map<string, Relation>>;
+
 function getInitMatrix(elements: Array<TerminalType>) {
   return elements.reduce((matrix, element) => {
 
@@ -37,6 +39,7 @@ function processNextSymbol(symbol: Vocabulary, cornerTerminals: CornerTerminals,
   return row;
 }
 
+// TODO [VK] added beginOFChain Symbol and EOF symbol
 function createPrecedenceMatrix(terminals: Array<TerminalType>, rules: Grammar, cornerTerminals: CornerTerminals) {
   const matrix = getInitMatrix(terminals);
 

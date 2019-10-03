@@ -1,7 +1,7 @@
 import SyntaxAnalyzer  from "./syntax-analyzer";
 import { NonTerminal, Terminal } from "./types";
 import parseStringToGrammar from './parse-string-to-grammar-rule';
-import createPrecedenceMatrix, { Relation } from "./precedence-matrix";
+import createPrecedenceMatrix, { Relation } from "./create-precedence-matrix";
 
 describe('syntax analyzer', () => {
 
@@ -129,7 +129,6 @@ describe('syntax analyzer', () => {
       Terminal('('),
       Terminal('p'),
     ];
-    const rules = syntaxAnalyzer.rules;
     const cornerTerminals = syntaxAnalyzer.getCornerTerminalSets();
 
     const expectedMatrix = buildMapFromObject({
