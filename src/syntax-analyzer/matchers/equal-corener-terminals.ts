@@ -1,4 +1,4 @@
-import { CornerTerminals, Vocabulary } from "../types";
+import { CornerTerminals, IVocabulary } from "../types";
 import CustomMatcherResult = jest.CustomMatcherResult;
 
 declare global {
@@ -9,7 +9,7 @@ declare global {
   }
 }
 
-const getValues = (symbols: Array<Vocabulary>) => symbols.map(s => s.value);
+const getValues = (symbols: Array<IVocabulary>) => symbols.map(s => s.value);
 
 export default (received: CornerTerminals, actual: CornerTerminals): CustomMatcherResult => {
   const receivedKeys = [...received.keys()];

@@ -1,4 +1,4 @@
-import { CornerTerminals, Grammar, TerminalType, TypeSymbol, Vocabulary } from "./types";
+import { CornerTerminals, createBOF, createEOF, IGrammar, ITerminalType, ITypeSymbol, IVocabulary } from "./types";
 
 export enum Relation {
   Base,
@@ -9,8 +9,8 @@ export enum Relation {
 
 export type PrecedenceMatrix = Map<string, Map<string, Relation>>;
 
-function getInitMatrix(elements: Array<TerminalType>) {
-  return elements.reduce((matrix, element) => {
+function getInitMatrix(elements: Array<ITerminalType>) {
+  return [createBOF(), ...elements, createEOF()].reduce((matrix, element) => {
 
     const subMatrix = elements.reduce((memo, element) => {
       memo.set(element.value, Relation.None);
@@ -24,9 +24,9 @@ function getInitMatrix(elements: Array<TerminalType>) {
   }, new Map<string, Map<string, Relation>>());
 }
 
-const isCorrectType = (symbol: Vocabulary, type: TypeSymbol) => symbol != undefined && symbol.type === type;
+const isCorrectType = (symbol: IVocabulary, type: ITypeSymbol) => symbol != undefined && symbol.type === type;
 
-function processNextSymbol(symbol: Vocabulary, cornerTerminals: CornerTerminals, row: Map<string, Relation>) {
+function processNextSymbol(symbol: IVocabulary, cornerTerminals: CornerTerminals, row: Map<string, Relation>) {
   const cornersTerminalOfSymbol = cornerTerminals.get(symbol.value);
   const rightSymbols = cornersTerminalOfSymbol != undefined ? cornersTerminalOfSymbol.rightElements : [];
 
@@ -40,7 +40,7 @@ function processNextSymbol(symbol: Vocabulary, cornerTerminals: CornerTerminals,
 }
 
 // TODO [VK] added beginOFChain Symbol and EOF symbol
-function createPrecedenceMatrix(terminals: Array<TerminalType>, rules: Grammar, cornerTerminals: CornerTerminals) {
+function createPrecedenceMatrix(terminals: Array<ITerminalType>, rules: IGrammar, cornerTerminals: CornerTerminals) {
   const matrix = getInitMatrix(terminals);
 
   // go through all syntax shift rules
@@ -57,7 +57,7 @@ function createPrecedenceMatrix(terminals: Array<TerminalType>, rules: Grammar, 
         const currentSymbol = currentRule[k];
         const symbolRow = matrix.get(currentSymbol.value);
 
-        if (currentSymbol.type !== TypeSymbol.Terminal || symbolRow == undefined) {
+        if (currentSymbol.type !== ITypeSymbol.Terminal || symbolRow == undefined) {
           continue;
         }
 
@@ -67,7 +67,7 @@ function createPrecedenceMatrix(terminals: Array<TerminalType>, rules: Grammar, 
 
         if (nextSymbol != undefined) {
 
-          if (nextSymbol.type == TypeSymbol.Terminal) {
+          if (nextSymbol.type == ITypeSymbol.Terminal) {
             symbolRow.set(nextSymbol.value, Relation.Base);
           }
 
@@ -95,7 +95,7 @@ function createPrecedenceMatrix(terminals: Array<TerminalType>, rules: Grammar, 
           }
         }
 
-        if (isCorrectType(nextSymbol, TypeSymbol.NonTerminal) && isCorrectType(secondSymbolAHead, TypeSymbol.Terminal)) {
+        if (isCorrectType(nextSymbol, ITypeSymbol.NonTerminal) && isCorrectType(secondSymbolAHead, ITypeSymbol.Terminal)) {
           symbolRow.set(secondSymbolAHead.value, Relation.Base);
         }
       }

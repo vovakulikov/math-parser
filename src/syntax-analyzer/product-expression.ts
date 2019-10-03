@@ -1,25 +1,25 @@
 import { PrecedenceMatrix } from "./create-precedence-matrix";
 import { IToken } from "../lexical-analyzer/token";
-import { Rule, Terminal, TerminalType, Vocabulary } from "./types";
+import { IRule, createTerminal, ITerminalType, IVocabulary } from "./types";
 
 type IOptions = {
   precedenceMatrix: PrecedenceMatrix,
   tokens: Array<IToken>,
-  rules: Array<Rule>,
+  rules: Array<IRule>,
 };
 
-function findRule(symbols: Array<Vocabulary>): Rule {
+function findRule(symbols: Array<IVocabulary>): IRule {
 
 }
 
 export default ({ precedenceMatrix, tokens, rules} : IOptions) => {
-  const lexems = tokens.map(token => Terminal(token.value));
+  const lexems = tokens.map(token => createTerminal(token.value));
   // TODO [VK] added beginOFChain Symbol and EOF symbol
   const stack = [];
 
   while (lexems.length > 0) {
     const isFirstSymbol = stack.length === 0;
-    const nextToken = lexems.shift() as TerminalType;
+    const nextToken = lexems.shift() as ITerminalType;
 
     if (isFirstSymbol) {
       stack.push(nextToken);

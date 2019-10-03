@@ -1,5 +1,5 @@
 import SyntaxAnalyzer  from "./syntax-analyzer";
-import { NonTerminal, Terminal } from "./types";
+import { createNonTerminal, createTerminal } from "./types";
 import parseStringToGrammar from './parse-string-to-grammar-rule';
 import createPrecedenceMatrix, { Relation } from "./create-precedence-matrix";
 
@@ -34,29 +34,29 @@ describe('syntax analyzer', () => {
 
     expect(syntaxAnalyzer.rules).toEqual([
       {
-        left: NonTerminal('S'),
+        left: createNonTerminal('S'),
         right: [
-          [ Terminal('-'), NonTerminal('B') ]
+          [ createTerminal('-'), createNonTerminal('B') ]
         ]
       },
       {
-        left: NonTerminal('B'),
+        left: createNonTerminal('B'),
         right: [
-          [ NonTerminal('T') ],
-          [ NonTerminal('B'),  Terminal('&'), NonTerminal('T') ]]
+          [ createNonTerminal('T') ],
+          [ createNonTerminal('B'),  createTerminal('&'), createNonTerminal('T') ]]
       },
       {
-        left: NonTerminal('T'),
+        left: createNonTerminal('T'),
         right: [
-          [ NonTerminal('J') ],
-          [ NonTerminal('T'), Terminal('^'), NonTerminal('J') ]
+          [ createNonTerminal('J') ],
+          [ createNonTerminal('T'), createTerminal('^'), createNonTerminal('J') ]
         ]
       },
       {
-        left: NonTerminal('J'),
+        left: createNonTerminal('J'),
         right: [
-          [ Terminal('('), NonTerminal('B'), Terminal(')') ],
-          [ Terminal('p') ]
+          [ createTerminal('('), createNonTerminal('B'), createTerminal(')') ],
+          [ createTerminal('p') ]
         ]
       }
     ]);
@@ -68,50 +68,50 @@ describe('syntax analyzer', () => {
     const expectedTerminals = buildMapFromObject({
       'S': {
         rightElements: [
-          Terminal('-'),
-          Terminal('&'),
-          Terminal('^'),
-          Terminal(')'),
-          Terminal('p'),
+          createTerminal('-'),
+          createTerminal('&'),
+          createTerminal('^'),
+          createTerminal(')'),
+          createTerminal('p'),
         ],
         leftElements: [
-          Terminal('-')
+          createTerminal('-')
         ],
       },
       'B': {
         rightElements: [
-          Terminal('&'),
-          Terminal('^'),
-          Terminal(')'),
-          Terminal('p'),
+          createTerminal('&'),
+          createTerminal('^'),
+          createTerminal(')'),
+          createTerminal('p'),
         ],
         leftElements: [
-          Terminal('&'),
-          Terminal('^'),
-          Terminal('('),
-          Terminal('p'),
+          createTerminal('&'),
+          createTerminal('^'),
+          createTerminal('('),
+          createTerminal('p'),
         ],
       },
       'T': {
         rightElements: [
-          Terminal('^'),
-          Terminal(')'),
-          Terminal('p'),
+          createTerminal('^'),
+          createTerminal(')'),
+          createTerminal('p'),
         ],
         leftElements: [
-          Terminal('^'),
-          Terminal('('),
-          Terminal('p'),
+          createTerminal('^'),
+          createTerminal('('),
+          createTerminal('p'),
         ],
       },
       'J': {
         rightElements: [
-          Terminal(')'),
-          Terminal('p'),
+          createTerminal(')'),
+          createTerminal('p'),
         ],
         leftElements: [
-          Terminal('('),
-          Terminal('p'),
+          createTerminal('('),
+          createTerminal('p'),
         ],
       }
     });
@@ -122,12 +122,12 @@ describe('syntax analyzer', () => {
 
   test('should correct build precedence matrix for current grammar', () => {
     const terminals = [
-      Terminal('-'),
-      Terminal('&'),
-      Terminal('^'),
-      Terminal(')'),
-      Terminal('('),
-      Terminal('p'),
+      createTerminal('-'),
+      createTerminal('&'),
+      createTerminal('^'),
+      createTerminal(')'),
+      createTerminal('('),
+      createTerminal('p'),
     ];
     const cornerTerminals = syntaxAnalyzer.getCornerTerminalSets();
 

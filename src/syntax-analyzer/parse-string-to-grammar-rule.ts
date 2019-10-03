@@ -1,4 +1,4 @@
-import { Grammar, Rule, NonTerminal, Terminal } from "./types";
+import { IGrammar, IRule, createNonTerminal, createTerminal } from "./types";
 
 // TODO [VK] Make parsing syntax gramma more flexible
 // const Options = {
@@ -7,7 +7,7 @@ import { Grammar, Rule, NonTerminal, Terminal } from "./types";
 //   ruleSeparator: '\n',
 // };
 
-const parseGrammarRule = (rawRule: string, terminals: Set<string>, nonTerminals: Set<string>): Rule => {
+const parseGrammarRule = (rawRule: string, terminals: Set<string>, nonTerminals: Set<string>): IRule => {
   const [left, right] = rawRule.trim().split('=>');
   const rules = right
     .trim()
@@ -19,18 +19,18 @@ const parseGrammarRule = (rawRule: string, terminals: Set<string>, nonTerminals:
         .map((lex: string) => {
 
           if (terminals.has(lex)) {
-            return Terminal(lex);
+            return createTerminal(lex);
           }
 
           if (nonTerminals.has(lex)) {
-            return NonTerminal(lex);
+            return createNonTerminal(lex);
           }
 
           throw Error('Unsupported lex in grammar string');
         });
     });
 
-  return { left: NonTerminal(left.trim()), right: rules };
+  return { left: createNonTerminal(left.trim()), right: rules };
 };
 
 export type AnalyzerOptions = {
@@ -39,7 +39,7 @@ export type AnalyzerOptions = {
   grammarString: string,
 }
 
-export default (options: AnalyzerOptions ): Grammar => {
+export default (options: AnalyzerOptions ): IGrammar => {
   return options.grammarString
     .split('\n')
     .filter(str => str.trim().length)

@@ -1,14 +1,14 @@
 import memo from '../utils/memo';
-import { CornerTerminals, Grammar, NonTerminalType, Rule, TerminalType, TypeSymbol } from "./types";
+import { CornerTerminals, IGrammar, INonTerminalType, IRule, ITerminalType, ITypeSymbol } from "./types";
 import SyntaxParseError from "./errors/syntax-parse-error";
 
 class SyntaxAnalyzer {
 
-  constructor(public rules: Grammar) {}
+  constructor(public rules: IGrammar) {}
 
-  static getUniqElementKey = (args: Array<NonTerminalType>) => args[0].value;
+  static getUniqElementKey = (args: Array<INonTerminalType>) => args[0].value;
 
-  // TODO [VK] Added new data structure for store Vocabulary elements
+  // TODO [VK] Added new data structure for store IVocabulary elements
   getCornerTerminalSets(): CornerTerminals {
     return this.rules.reduce<CornerTerminals>((result, rule) => {
       const currentProcessedElement = rule.left;
@@ -25,24 +25,24 @@ class SyntaxAnalyzer {
   // Get all left corner terminal symbols at grammar
   // Memo just need for escape search sets element at grammar what we already searched
   // This is LT(U) set
-  private getLeftSet = memo<Map<String, TerminalType>, NonTerminalType>((element: NonTerminalType) => {
+  private getLeftSet = memo<Map<String, ITerminalType>, INonTerminalType>((element: INonTerminalType) => {
     const rule = this.getRuleByElement(element);
-    let leftElements = new Map<String, TerminalType>();
+    let leftElements = new Map<String, ITerminalType>();
 
     for (let i = 0; i < rule.right.length; i++) {
       const currentRule = rule.right[i];
       const leftElement = currentRule[0];
 
-      if (leftElement.type === TypeSymbol.NonTerminal) {
+      if (leftElement.type === ITypeSymbol.NonTerminal) {
         const innerElements = leftElement.value !== rule.left.value
           ? this.getLeftSet(leftElement)
           : [];
 
         const nextTerminal = currentRule
-          .find((symbol) => symbol.type === TypeSymbol.Terminal);
+          .find((symbol) => symbol.type === ITypeSymbol.Terminal);
 
         if (nextTerminal != null && !leftElements.has(nextTerminal.value)) {
-          leftElements.set(nextTerminal.value, <TerminalType>nextTerminal);
+          leftElements.set(nextTerminal.value, <ITerminalType>nextTerminal);
         }
 
         leftElements = new Map([...leftElements, ...innerElements]);
@@ -54,25 +54,25 @@ class SyntaxAnalyzer {
     return leftElements;
   }, { keySelector: SyntaxAnalyzer.getUniqElementKey });
 
-  private getRightSet = memo<Map<String, TerminalType>, NonTerminalType>((element: NonTerminalType) => {
+  private getRightSet = memo<Map<String, ITerminalType>, INonTerminalType>((element: INonTerminalType) => {
     const rule = this.getRuleByElement(element);
-    let rightElements = new Map<String, TerminalType>();
+    let rightElements = new Map<String, ITerminalType>();
 
     for (let i = 0; i < rule.right.length; i++) {
       const currentRule = rule.right[i];
       const rightElement = currentRule[currentRule.length - 1];
 
-      if (rightElement.type === TypeSymbol.NonTerminal) {
+      if (rightElement.type === ITypeSymbol.NonTerminal) {
         const innerElements = rightElement.value !== rule.left.value
           ? this.getRightSet(rightElement)
           : new Map();
         const nextTerminal = currentRule
           .concat()
           .reverse()
-          .find((symbol) => symbol.type === TypeSymbol.Terminal);
+          .find((symbol) => symbol.type === ITypeSymbol.Terminal);
 
         if (nextTerminal != null && !rightElements.has(nextTerminal.value)) {
-          rightElements.set(nextTerminal.value, <TerminalType>nextTerminal);
+          rightElements.set(nextTerminal.value, <ITerminalType>nextTerminal);
         }
 
         // Add inner elements into result array
@@ -85,7 +85,7 @@ class SyntaxAnalyzer {
     return rightElements;
   }, { keySelector: SyntaxAnalyzer.getUniqElementKey });
 
-  private getRuleByElement(element: NonTerminalType): Rule {
+  private getRuleByElement(element: INonTerminalType): IRule {
     const rule = this.rules.find((rule) => rule.left.value === element.value);
 
     if (rule == undefined) {
