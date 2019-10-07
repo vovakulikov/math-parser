@@ -1,12 +1,12 @@
 import memo from '../utils/memo';
-import { CornerTerminals, IGrammar, INonTerminalType, IRule, ITerminalType, ITypeSymbol } from "./types";
+import { CornerTerminals, IGrammar, INonTerminal, IRule, ITerminal, ITypeSymbol } from "./types";
 import SyntaxParseError from "./errors/syntax-parse-error";
 
 class SyntaxAnalyzer {
 
   constructor(public rules: IGrammar) {}
 
-  static getUniqElementKey = (args: Array<INonTerminalType>) => args[0].value;
+  static getUniqElementKey = (args: Array<INonTerminal>) => args[0].value;
 
   // TODO [VK] Added new data structure for store IVocabulary elements
   getCornerTerminalSets(): CornerTerminals {
@@ -25,9 +25,9 @@ class SyntaxAnalyzer {
   // Get all left corner terminal symbols at grammar
   // Memo just need for escape search sets element at grammar what we already searched
   // This is LT(U) set
-  private getLeftSet = memo<Map<String, ITerminalType>, INonTerminalType>((element: INonTerminalType) => {
+  private getLeftSet = memo<Map<String, ITerminal>, INonTerminal>((element: INonTerminal) => {
     const rule = this.getRuleByElement(element);
-    let leftElements = new Map<String, ITerminalType>();
+    let leftElements = new Map<String, ITerminal>();
 
     for (let i = 0; i < rule.right.length; i++) {
       const currentRule = rule.right[i];
@@ -42,7 +42,7 @@ class SyntaxAnalyzer {
           .find((symbol) => symbol.type === ITypeSymbol.Terminal);
 
         if (nextTerminal != null && !leftElements.has(nextTerminal.value)) {
-          leftElements.set(nextTerminal.value, <ITerminalType>nextTerminal);
+          leftElements.set(nextTerminal.value, <ITerminal>nextTerminal);
         }
 
         leftElements = new Map([...leftElements, ...innerElements]);
@@ -54,9 +54,9 @@ class SyntaxAnalyzer {
     return leftElements;
   }, { keySelector: SyntaxAnalyzer.getUniqElementKey });
 
-  private getRightSet = memo<Map<String, ITerminalType>, INonTerminalType>((element: INonTerminalType) => {
+  private getRightSet = memo<Map<String, ITerminal>, INonTerminal>((element: INonTerminal) => {
     const rule = this.getRuleByElement(element);
-    let rightElements = new Map<String, ITerminalType>();
+    let rightElements = new Map<String, ITerminal>();
 
     for (let i = 0; i < rule.right.length; i++) {
       const currentRule = rule.right[i];
@@ -72,7 +72,7 @@ class SyntaxAnalyzer {
           .find((symbol) => symbol.type === ITypeSymbol.Terminal);
 
         if (nextTerminal != null && !rightElements.has(nextTerminal.value)) {
-          rightElements.set(nextTerminal.value, <ITerminalType>nextTerminal);
+          rightElements.set(nextTerminal.value, <ITerminal>nextTerminal);
         }
 
         // Add inner elements into result array
@@ -85,7 +85,7 @@ class SyntaxAnalyzer {
     return rightElements;
   }, { keySelector: SyntaxAnalyzer.getUniqElementKey });
 
-  private getRuleByElement(element: INonTerminalType): IRule {
+  private getRuleByElement(element: INonTerminal): IRule {
     const rule = this.rules.find((rule) => rule.left.value === element.value);
 
     if (rule == undefined) {

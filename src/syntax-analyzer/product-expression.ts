@@ -1,6 +1,6 @@
 import { PrecedenceMatrix } from "./create-precedence-matrix";
 import { IToken } from "../lexical-analyzer/token";
-import { IRule, createTerminal, ITerminalType, IVocabulary } from "./types";
+import { IRule, createTerminal, ITerminal, IVocabulary } from "./types";
 
 type IOptions = {
   precedenceMatrix: PrecedenceMatrix,
@@ -19,13 +19,13 @@ export default ({ precedenceMatrix, tokens, rules} : IOptions) => {
 
   while (lexems.length > 0) {
     const isFirstSymbol = stack.length === 0;
-    const nextToken = lexems.shift() as ITerminalType;
+    const nextToken = lexems.shift() as ITerminal;
 
     if (isFirstSymbol) {
       stack.push(nextToken);
       continue;
     }
 
-    const relation = precedenceMatrix.get(nextToken.value).get()
+    const relation = precedenceMatrix.get(nextToken.value)
   }
 }

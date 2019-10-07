@@ -1,5 +1,5 @@
 import SyntaxAnalyzer  from "./syntax-analyzer";
-import { createNonTerminal, createTerminal } from "./types";
+import { BOF, createNonTerminal, createTerminal, EOF } from "./types";
 import parseStringToGrammar from './parse-string-to-grammar-rule';
 import createPrecedenceMatrix, { Relation } from "./create-precedence-matrix";
 
@@ -131,56 +131,69 @@ describe('syntax analyzer', () => {
     ];
     const cornerTerminals = syntaxAnalyzer.getCornerTerminalSets();
 
-    const expectedMatrix = buildMapFromObject({
-      '-': buildMapFromObject({
+    const expectedMatrix = {
+      [BOF.value] : {
+        '-': Relation.Prev,
+        '&': Relation.None,
+        '^': Relation.None,
+        '(': Relation.Prev,
+        ')': Relation.None,
+        'p': Relation.Prev,
+      },
+      '-': {
         '-': Relation.None,
         '&': Relation.Prev,
         '^': Relation.Prev,
         '(': Relation.Prev,
         ')': Relation.None,
         'p': Relation.Prev,
-      }),
-      '&': buildMapFromObject({
+        [EOF.value]: Relation.Next,
+      },
+      '&': {
         '-': Relation.None,
         '&': Relation.Next,
         '^': Relation.Prev,
         '(': Relation.Prev,
         ')': Relation.Next,
         'p': Relation.Prev,
-      }),
-      '^': buildMapFromObject({
+        [EOF.value]: Relation.Next,
+      },
+      '^': {
         '-': Relation.None,
         '&': Relation.Next,
         '^': Relation.Next,
         '(': Relation.Prev,
         ')': Relation.Next,
         'p': Relation.Prev,
-      }),
-      '(': buildMapFromObject({
+        [EOF.value]: Relation.Next,
+      },
+      '(': {
         '-': Relation.None,
         '&': Relation.Prev,
         '^': Relation.Prev,
         '(': Relation.Prev,
         ')': Relation.Base,
         'p': Relation.Prev,
-      }),
-      ')': buildMapFromObject({
+      },
+      ')': {
         '-': Relation.None,
         '&': Relation.Next,
         '^': Relation.Next,
         '(': Relation.None,
         ')': Relation.Next,
         'p': Relation.None,
-      }),
-      'p': buildMapFromObject({
+        [EOF.value]: Relation.Next,
+      },
+      'p': {
         '-': Relation.None,
         '&': Relation.Next,
         '^': Relation.Next,
         '(': Relation.None,
         ')': Relation.Next,
         'p': Relation.None,
-      }),
-    });
+        [EOF.value]: Relation.Next,
+      },
+    };
     const matrix = createPrecedenceMatrix(terminals, syntaxAnalyzer.rules, cornerTerminals);
 
     expect(matrix).toEqual(expectedMatrix);
