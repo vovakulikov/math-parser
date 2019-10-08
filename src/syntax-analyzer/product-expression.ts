@@ -1,6 +1,7 @@
-import { PrecedenceMatrix } from "./create-precedence-matrix";
+import { PrecedenceMatrix, Relation } from "./create-precedence-matrix";
 import { IToken } from "../lexical-analyzer/token";
-import { IRule, createTerminal, ITerminal, IVocabulary, BOF, EOF } from "./types";
+import { BOF, createTerminal, EOF, IRule, ITerminal, ITypeSymbol, IVocabulary } from "./types";
+import { isType } from "./terminal-helpers";
 
 type IOptions = {
   precedenceMatrix: PrecedenceMatrix,
@@ -12,13 +13,38 @@ function findRule(symbols: Array<IVocabulary>): IRule {
 
 }
 
+function getTopTerminal(stack: Array<IVocabulary>) {
+  for (let index = stack.length - 1; index >= 0; index--) {
+    if (isType(stack[index], ITypeSymbol.Terminal)) {
+      return stack[index];
+    }
+  }
+
+  return null;
+}
+
 export default ({ precedenceMatrix, tokens, rules} : IOptions) => {
   const terminals = tokens.map(token => createTerminal(token.value));
   const queueTokens = [...terminals, EOF];
   const stack = [BOF];
 
   while (queueTokens.length > 0) {
-    const nextToken = queueTokens.shift() as ITerminal;
-    const relation = precedenceMatrix[nextToken.value][];
+    const nextToken = queueTokens[0] as ITerminal;
+    const topTerminal = getTopTerminal(stack);
+
+    if (topTerminal == null) {
+      continue;
+    }
+
+    const relation = precedenceMatrix[nextToken.value][topTerminal.value];
+
+    if (relation === Relation.Base || Relation.Prev) {
+      queueTokens.shift();
+      stack.push(nextToken);
+    }
+
+    if (relation === Relation.Next) {
+
+    }
   }
 }

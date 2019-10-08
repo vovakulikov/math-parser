@@ -170,8 +170,6 @@ const matrixFillers = [
   bofAndEofFiller,
 ];
 
-const isType = (symbol: IVocabulary, type: ITypeSymbol) => symbol != undefined && symbol.type === type;
-
 function mergeMatrix(first: PrecedenceMatrix, second: PrecedenceMatrix): PrecedenceMatrix {
   const mergedMatrix = <PrecedenceMatrix>{};
   const keys = Object.keys({...first, ...second});

@@ -8,9 +8,10 @@ export const enum ITypeSymbol {
 
 export type ITerminal = { type: ITypeSymbol.Terminal, value: string };
 export type INonTerminal = { type: ITypeSymbol.NonTerminal, value: string };
+export type IBOF = { type:  ITypeSymbol.BOF, value: string };
+export type IEOF = { type: ITypeSymbol.EOF, value: string };
 
-
-export type IVocabulary = ITerminal | INonTerminal;
+export type IVocabulary = ITerminal | INonTerminal | IBOF | IEOF;
 
 export type IGrammar = Array<IRule>;
 
