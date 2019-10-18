@@ -1,6 +1,6 @@
 import { PrecedenceMatrix, Relation } from "./create-precedence-matrix";
 import { IToken } from "../lexical-analyzer/token";
-import { BOF, createTerminal, EOF, IRule, ITerminal, ITypeSymbol, IVocabulary } from "./types";
+import { BOF, createTerminal, EOF, IExtendedVocabulary, IRule, ITerminal, ITypeSymbol, IVocabulary } from "./types";
 import { isType } from "./terminal-helpers";
 
 type IOptions = {
@@ -13,7 +13,7 @@ function findRule(symbols: Array<IVocabulary>): IRule {
 
 }
 
-function getTopTerminal(stack: Array<IVocabulary>) {
+function getTopTerminal(stack: Array<IExtendedVocabulary>) {
   for (let index = stack.length - 1; index >= 0; index--) {
     if (isType(stack[index], ITypeSymbol.Terminal)) {
       return stack[index];
@@ -44,7 +44,7 @@ export default ({ precedenceMatrix, tokens, rules} : IOptions) => {
     }
 
     if (relation === Relation.Next) {
-
+      // TODO [VK] find product rule for shift
     }
   }
 }

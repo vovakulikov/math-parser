@@ -1,4 +1,4 @@
-import includeSameCornerTerminalsMatcher from './syntax-analyzer/matchers/equal-corener-terminals';
+import includeSameCornerTerminalsMatcher from './equal-corener-terminals';
 
 const matchers = { includeSameCornerTerminals: includeSameCornerTerminalsMatcher };
 

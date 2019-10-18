@@ -6,6 +6,7 @@ import {
   ITerminal,
   ITypeSymbol,
   IVocabulary } from "./types";
+import { isType } from "./terminal-helpers";
 
 export enum Relation {
   Base,

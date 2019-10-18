@@ -1,3 +1,3 @@
-import { ITypeSymbol, IVocabulary } from "./types";
+import { IExtendedVocabulary, ITypeSymbol } from "./types";
 
-export const isType = (symbol: IVocabulary, type: ITypeSymbol) => symbol != undefined && symbol.type === type;
+export const isType = (symbol: IExtendedVocabulary, type: ITypeSymbol) => symbol != undefined && symbol.type === type;

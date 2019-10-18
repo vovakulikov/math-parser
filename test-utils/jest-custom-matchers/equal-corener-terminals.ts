@@ -1,4 +1,4 @@
-import { CornerTerminals, IVocabulary } from "../types";
+import { CornerTerminals, IVocabulary } from "../../src/syntax-analyzer/types";
 import CustomMatcherResult = jest.CustomMatcherResult;
 
 declare global {
