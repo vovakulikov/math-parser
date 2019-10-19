@@ -11,7 +11,13 @@ export default [
   {
     left: createNonTerminal('S'),
     products: [
-      { type: OperationType.unary, rule: [createTerminal('-'), createNonTerminal('B')] }
+      {
+        type: OperationType.unary,
+        rule: [
+          createTerminal('-'),
+          createNonTerminal('B')
+        ]
+      }
     ],
   },
   {
